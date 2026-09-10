@@ -55,11 +55,6 @@ public abstract class Dao implements AutoCloseable{
 		}
 	}
 
-	/**
-	 * retorna uma conexao
-	 * @return
-	 * @throws SQLException 
-	 */
 	protected Connection getConexao() throws SQLException {
 		if(con == null || con.isClosed())
 			conectar();

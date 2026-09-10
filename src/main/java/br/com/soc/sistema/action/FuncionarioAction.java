@@ -33,14 +33,17 @@ public class FuncionarioAction extends Action {
 	}
 	
 	public String novo() {
-		if(funcionarioVo.getNome() == null)
-			return INPUT;
-		
-		business.salvarFuncionario(funcionarioVo);
-		
-		return REDIRECT;
+	    if(funcionarioVo.getNome() == null)
+	        return INPUT;
+	    
+	    if(funcionarioVo.getRowid() == null || funcionarioVo.getRowid().isEmpty()) {
+	        business.salvarFuncionario(funcionarioVo);
+	    } else {
+	        business.atualizarFuncionario(funcionarioVo);
+	    }
+	    
+	    return REDIRECT;
 	}
-	
 	public String editar() {
 		if(funcionarioVo.getRowid() == null)
 			return REDIRECT;
@@ -48,6 +51,31 @@ public class FuncionarioAction extends Action {
 		funcionarioVo = business.buscarFuncionarioPor(funcionarioVo.getRowid());
 		
 		return INPUT;
+	}
+	
+	private boolean exibirModalCascata = false;
+
+	public String excluir() {
+	    if (funcionarioVo.getRowid() == null)
+	        return REDIRECT;
+
+	    if (business.temCompromissosVinculados(funcionarioVo.getRowid()) && !exibirModalCascata) {
+	        exibirModalCascata = true;
+	        funcionarios = business.trazerTodosOsFuncionarios();
+	        addActionError("Este funcionário possui compromissos vinculados que serão removidos.");
+	        return SUCCESS;
+	    }
+
+	    business.excluirFuncionario(funcionarioVo.getRowid());
+	    return REDIRECT;
+	}
+
+	public boolean isExibirModalCascata() {
+	    return exibirModalCascata;
+	}
+
+	public void setExibirModalCascata(boolean exibirModalCascata) {
+	    this.exibirModalCascata = exibirModalCascata;
 	}
 	
 	public List<OpcoesComboBuscar> getListaOpcoesCombo(){

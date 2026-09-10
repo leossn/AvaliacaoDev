@@ -20,21 +20,6 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 	
-	<listener>
-		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
-	</listener>
-
-	<servlet>
-		<servlet-name>soap</servlet-name>
-		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>soap</servlet-name>
-		<url-pattern>/soap</url-pattern>
-	</servlet-mapping>
-	
 	<servlet>
 		<servlet-name>h2-console</servlet-name>
 		<servlet-class>org.h2.server.web.WebServlet</servlet-class>

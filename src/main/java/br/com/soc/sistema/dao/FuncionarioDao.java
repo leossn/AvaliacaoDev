@@ -104,4 +104,61 @@ public class FuncionarioDao extends Dao {
 		}		
 		return null;
 	}
+	
+	public void deleteFuncionario(Integer id) {
+	    StringBuilder deleteCompromissos = new StringBuilder("DELETE FROM compromisso WHERE cd_funcionario = ?");
+	    StringBuilder deleteFuncionario = new StringBuilder("DELETE FROM funcionario WHERE rowid = ?");
+	    
+	    try (Connection con = getConexao()) {
+	        con.setAutoCommit(false);
+	        
+	        try (PreparedStatement psComp = con.prepareStatement(deleteCompromissos.toString());
+	             PreparedStatement psFunc = con.prepareStatement(deleteFuncionario.toString())) {
+	            
+	            psComp.setInt(1, id);
+	            psComp.executeUpdate();
+	            
+	            psFunc.setInt(1, id);
+	            psFunc.executeUpdate();
+	            
+	            con.commit(); 
+	        } catch (SQLException e) {
+	            con.rollback(); 
+	            e.printStackTrace();
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public void updateFuncionario(FuncionarioVo funcionarioVo){
+	    StringBuilder query = new StringBuilder("UPDATE funcionario SET nm_funcionario = ? WHERE rowid = ?");
+	    try(
+	        Connection con = getConexao();
+	        PreparedStatement ps = con.prepareStatement(query.toString())){
+	        
+	        ps.setString(1, funcionarioVo.getNome());
+	        ps.setInt(2, Integer.parseInt(funcionarioVo.getRowid()));
+	        ps.executeUpdate();
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public boolean hasCompromissoByFuncionario(Integer idFuncionario) {
+	    StringBuilder query = new StringBuilder("SELECT COUNT(1) total FROM compromisso WHERE cd_funcionario = ?");
+	    try (Connection con = getConexao();
+	         PreparedStatement ps = con.prepareStatement(query.toString())) {
+	        ps.setInt(1, idFuncionario);
+	        try (ResultSet rs = ps.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt("total") > 0;
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
 }

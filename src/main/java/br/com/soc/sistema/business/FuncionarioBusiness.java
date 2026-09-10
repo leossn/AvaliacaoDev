@@ -3,6 +3,7 @@ package br.com.soc.sistema.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.soc.sistema.dao.CompromissoDao;
 import br.com.soc.sistema.dao.FuncionarioDao;
 import br.com.soc.sistema.exception.BusinessException;
 import br.com.soc.sistema.filter.FuncionarioFilter;
@@ -23,8 +24,9 @@ public class FuncionarioBusiness {
 	
 	public void salvarFuncionario(FuncionarioVo funcionarioVo) {
 		try {
-			if(funcionarioVo.getNome().isEmpty())
-				throw new IllegalArgumentException("Nome nao pode ser em branco");
+			if (funcionarioVo.getNome() == null || funcionarioVo.getNome().isEmpty()) {
+			    throw new BusinessException("Nome nao pode ser vazio");
+			}
 			
 			dao.insertFuncionario(funcionarioVo);
 		} catch (Exception e) {
@@ -61,5 +63,37 @@ public class FuncionarioBusiness {
 		}catch (NumberFormatException e) {
 			throw new BusinessException(FOI_INFORMADO_CARACTER_NO_LUGAR_DE_UM_NUMERO);
 		}
+	}
+	
+	public void excluirFuncionario(String codigo) {
+	    try {
+	        Integer cod = Integer.parseInt(codigo);
+	        dao.deleteFuncionario(cod);
+	    } catch (NumberFormatException e) {
+	        throw new BusinessException(FOI_INFORMADO_CARACTER_NO_LUGAR_DE_UM_NUMERO);
+	    } catch (Exception e) {
+	        throw new BusinessException("Nao foi possivel realizar a exclusao do registro");
+	    }
+	}
+	
+	public void atualizarFuncionario(FuncionarioVo funcionarioVo) {
+	    try {
+	        if(funcionarioVo.getNome() == null || funcionarioVo.getNome().isEmpty())
+	            throw new IllegalArgumentException("Nome nao pode ser em branco");
+	        
+	        dao.updateFuncionario(funcionarioVo);
+	    } catch (Exception e) {
+	        throw new BusinessException("Nao foi possivel realizar a alteracao do registro");
+	    }
+	}
+	
+	public boolean temCompromissosVinculados(String codigo) {
+	    try {
+	        Integer cod = Integer.parseInt(codigo);
+	        FuncionarioDao funcDao = new FuncionarioDao();
+	        return funcDao.hasCompromissoByFuncionario(cod);
+	    } catch (Exception e) {
+	        return false;
+	    }
 	}
 }

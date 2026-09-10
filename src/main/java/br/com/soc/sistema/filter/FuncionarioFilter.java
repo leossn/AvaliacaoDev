@@ -19,11 +19,17 @@ public class FuncionarioFilter {
 		return opcoesCombo;
 	}
 
-	public FuncionarioFilter setOpcoesCombo(String codigo) {
-		this.opcoesCombo = OpcoesComboBuscar.buscarPor(codigo);
-		return this;
-	}	
-	
+	public void setOpcoesCombo(String codigo) {
+		if (codigo != null && !codigo.trim().isEmpty()) {
+			try {
+				this.opcoesCombo = OpcoesComboBuscar.buscarPor(codigo);
+			} catch (Exception e) {
+				this.opcoesCombo = null;
+			}
+		} else {
+			this.opcoesCombo = null;
+		}
+	}
 	public boolean isNullOpcoesCombo() {
 		return this.getOpcoesCombo() == null;
 	}

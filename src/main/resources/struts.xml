@@ -1,22 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
-    "http://struts.apache.org/dtds/struts-2.5.dtd">
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN" "http://struts.apache.org/dtds/struts-2.5.dtd">
 
 <struts>
-
-    <constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="true" />
 	<constant name="struts.ui.theme" value="simple" />
-    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
 	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
-	<constant name="struts.action.excludePattern" value="/webjars/.*,/h2-console/*" />
-	
-    <package name="br.com.soc.sistema" extends="struts-default" strict-method-invocation="false">
-        <action name="*Funcionarios" class="br.com.soc.sistema.action.FuncionarioAction" method="{1}">
-        	<result name="success">/funcionario/cadFuncionario_b.jsp</result>
-            <result name="input">/funcionario/cadFuncionario_i.jsp</result>
-        	<result name="redirect" type="redirectAction">todosFuncionarios</result>
-        </action>
-    </package>
+	<constant name="struts.action.excludePattern"
+		value="/webjars/.*,/h2-console/*" />
 
+	<package name="br.com.soc.sistema" extends="struts-default"
+		strict-method-invocation="false">
+		<action name="*Funcionarios"
+			class="br.com.soc.sistema.action.FuncionarioAction" method="{1}">
+			<result name="success">/funcionario/cadFuncionario_b.jsp</result>
+			<result name="input">/funcionario/cadFuncionario_i.jsp</result>
+			<result name="redirect" type="redirectAction">todosFuncionarios</result>
+		</action>
+	</package>
+
+	<package name="br.com.soc.sistema.agenda" extends="struts-default"
+		strict-method-invocation="false">
+		<action name="*Agendas" class="br.com.soc.sistema.action.AgendaAction"
+			method="{1}">
+			<result name="success">/agenda/cadAgenda_b.jsp</result>
+			<result name="input">/agenda/cadAgenda_i.jsp</result>
+			<result name="redirect" type="redirectAction">todosAgendas</result>
+		</action>
+
+		<action name="*Compromissos"
+			class="br.com.soc.sistema.action.CompromissoAction" method="{1}">
+			<result name="success">/compromisso/cadCompromisso_b.jsp</result>
+			<result name="input">/compromisso/cadCompromisso_i.jsp</result>
+			<result name="redirect" type="redirectAction">todosCompromissos</result>
+		</action>
+
+		<!-- Apenas exibe a tela limpa com os campos de Data Inicial e Data
+		Final -->
+		<action name="prepararRelatorioCompromissos"
+			class="br.com.soc.sistema.action.CompromissoAction"
+			method="prepararRelatorio">
+			<result name="success">/relatorio/cadRelatorio_b.jsp</result>
+		</action>
+
+		<!-- Processa a busca por período e renderiza os dados na tela de
+		relatório -->
+		<action name="gerarRelatorioCompromissos"
+			class="br.com.soc.sistema.action.CompromissoAction"
+			method="gerarRelatorio">
+			<result name="success">/relatorio/cadRelatorio_i.jsp</result>
+			<result name="input">/relatorio/cadRelatorio_b.jsp</result>
+		</action>
+
+		<action name="exportarExcelCompromissos"
+			class="br.com.soc.sistema.action.CompromissoAction"
+			method="exportarExcel">
+		</action>
+
+	</package>
 </struts>
