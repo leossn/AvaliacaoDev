@@ -2,14 +2,14 @@ CREATE TABLE IF NOT EXISTS funcionario (
     rowid INT AUTO_INCREMENT PRIMARY KEY,
     nm_funcionario VARCHAR(100) NOT NULL
 );
-INSERT INTO funcionario (nm_funcionario) VALUES ('João'), ('Maria'), ('José'), ('Joana');
+INSERT INTO funcionario (nm_funcionario) VALUES ('João'), ('Maria'), ('Lucas'), ('Gabriela');
 
 CREATE TABLE IF NOT EXISTS agenda (
     rowid INT AUTO_INCREMENT PRIMARY KEY,
     nm_agenda VARCHAR(100) NOT NULL,
     ds_periodo VARCHAR(50) NOT NULL
 );
-INSERT INTO agenda (nm_agenda, ds_periodo) VALUES ('Agenda Manhã', '1'), ('Agenda Tarde', '2'), ('Agenda Geral', '3');
+INSERT INTO agenda (nm_agenda, ds_periodo) VALUES ('Alinhamento Projeto', '1'), ('Mentoria AGER', '2'), ('Reunião Diretoria', '3');
 
 CREATE TABLE IF NOT EXISTS compromisso (
     rowid INT AUTO_INCREMENT PRIMARY KEY,
