@@ -34,6 +34,7 @@
 							<th>Agenda</th>
 							<th>Data</th>
 							<th>Horário</th>
+							<th class="text-end">Ações</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -44,6 +45,16 @@
 								<td><s:property value="nomeAgenda" /></td>
 								<td><s:property value="data" /></td>
 								<td><s:property value="horario" /></td>
+								<td class="text-end">
+									<s:url action="editarCompromissos" var="urlEditar">
+										<s:param name="compromissoVo.rowid" value="rowid" />
+									</s:url>
+									<s:url action="excluirCompromissos" var="urlExcluir">
+										<s:param name="compromissoVo.rowid" value="rowid" />
+									</s:url>
+									<a href="${urlEditar}" class="btn btn-warning btn-sm">Editar</a>
+									<a href="${urlExcluir}" class="btn btn-danger btn-sm">Excluir</a>
+								</td>
 							</tr>
 						</s:iterator>
 					</tbody>

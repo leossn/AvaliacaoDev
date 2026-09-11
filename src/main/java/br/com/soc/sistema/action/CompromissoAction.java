@@ -54,6 +54,8 @@ public class CompromissoAction extends Action {
 	}
 
 	public String novo() {
+		carregarCombos();
+		
 		if (compromissoVo == null || compromissoVo.getData() == null) {
 			return INPUT;
 		}
@@ -65,6 +67,25 @@ public class CompromissoAction extends Action {
 			addActionError(e.getMessage());
 			return INPUT;
 		}
+	}
+	
+	public String editar() {
+		carregarCombos();
+		
+	    if (compromissoVo.getRowid() == null) {
+	        return REDIRECT;
+	    }
+	    compromissoVo = business.buscarCompromissoPor(compromissoVo.getRowid());
+	    return INPUT;
+	}
+
+	public String excluir() {
+	    if (compromissoVo.getRowid() == null) {
+	        return REDIRECT;
+	    }
+
+	    business.excluirCompromisso(compromissoVo.getRowid());
+	    return REDIRECT;
 	}
 
 	private void carregarCombos() {
@@ -92,12 +113,10 @@ public class CompromissoAction extends Action {
 	}
 
 	public List<FuncionarioVo> getListaFuncionarios() {
-		carregarCombos();
 		return listaFuncionarios;
 	}
 
 	public List<AgendaVo> getListaAgendas() {
-		carregarCombos();
 		return listaAgendas;
 	}
 
@@ -116,7 +135,6 @@ public class CompromissoAction extends Action {
 		try (org.apache.poi.xssf.usermodel.XSSFWorkbook wb = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
 			org.apache.poi.xssf.usermodel.XSSFSheet sheet = wb.createSheet("Compromissos");
 
-			// Estilos unificados (Cabeçalho, Linha Normal e Linha Zebrada)
 			org.apache.poi.ss.usermodel.CellStyle hStyle = wb.createCellStyle();
 			org.apache.poi.ss.usermodel.Font hFont = wb.createFont();
 			hFont.setBold(true);
@@ -132,7 +150,6 @@ public class CompromissoAction extends Action {
 					new org.apache.poi.xssf.usermodel.XSSFColor(new java.awt.Color(242, 242, 242), null));
 			iStyle.setFillPattern(org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND);
 
-			// Aplica bordas finas em tudo de forma rápida
 			for (org.apache.poi.ss.usermodel.CellStyle st : new org.apache.poi.ss.usermodel.CellStyle[] { hStyle,
 					pStyle, iStyle }) {
 				st.setBorderBottom(org.apache.poi.ss.usermodel.BorderStyle.THIN);
@@ -141,7 +158,6 @@ public class CompromissoAction extends Action {
 				st.setBorderRight(org.apache.poi.ss.usermodel.BorderStyle.THIN);
 			}
 
-			// Cabeçalho
 			org.apache.poi.ss.usermodel.Row head = sheet.createRow(0);
 			head.setHeightInPoints(25);
 			String[] cols = { "Cód. Funcionário", "Nome Funcionário", "Cód. Agenda", "Nome Agenda", "Data", "Hora" };
@@ -151,14 +167,12 @@ public class CompromissoAction extends Action {
 				c.setCellStyle(hStyle);
 			}
 
-			// Dados
 			int rNum = 1;
 			for (CompromissoVo vo : relatorio) {
 				org.apache.poi.ss.usermodel.Row row = sheet.createRow(rNum++);
 				row.setHeightInPoints(20);
 				org.apache.poi.ss.usermodel.CellStyle st = (rNum % 2 == 0) ? iStyle : pStyle;
 
-				// Código Funcionário (Convertido para número para sumir o aviso do Excel)
 				org.apache.poi.ss.usermodel.Cell c0 = row.createCell(0);
 				if (vo.getCodigoFuncionario() != null && !vo.getCodigoFuncionario().isEmpty())
 					c0.setCellValue(Double.parseDouble(vo.getCodigoFuncionario()));
@@ -168,7 +182,6 @@ public class CompromissoAction extends Action {
 				c1.setCellValue(vo.getNomeFuncionario() != null ? vo.getNomeFuncionario() : "");
 				c1.setCellStyle(st);
 
-				// Código Agenda (Convertido para número)
 				org.apache.poi.ss.usermodel.Cell c2 = row.createCell(2);
 				if (vo.getCodigoAgenda() != null && !vo.getCodigoAgenda().isEmpty())
 					c2.setCellValue(Double.parseDouble(vo.getCodigoAgenda()));
@@ -185,7 +198,6 @@ public class CompromissoAction extends Action {
 				c5.setCellStyle(st);
 			}
 
-			// Ajuste de largura das colunas
 			for (int i = 0; i < cols.length; i++) {
 				sheet.autoSizeColumn(i);
 				sheet.setColumnWidth(i, sheet.getColumnWidth(i) + 1500);

@@ -7,11 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import br.com.soc.sistema.exception.TechnicalException;
 import br.com.soc.sistema.vo.AgendaVo;
 
 public class AgendaDao extends Dao {
-
+	private static final Logger logger = LogManager.getLogger(AgendaDao.class);
 	public void insertAgenda(AgendaVo agendaVo) {
 		StringBuilder query = new StringBuilder("INSERT INTO agenda (nm_agenda, ds_periodo) values (?, ?)");
 		try (Connection con = getConexao(); PreparedStatement ps = con.prepareStatement(query.toString())) {
@@ -20,7 +22,8 @@ public class AgendaDao extends Dao {
 			ps.setString(2, agendaVo.getPeriodo());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Erro ao inserir agenda no banco de dados. Nome: {}", agendaVo.getNome(), e);
+            throw new TechnicalException("Erro ao inserir agenda no banco de dados", e);
 		}
 	}
 
@@ -42,8 +45,8 @@ public class AgendaDao extends Dao {
 			}
 			return agendas;
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		    logger.error("Erro ao consultar agendas no banco de dados", e);
+		}		
 
 		return Collections.emptyList();
 	}
@@ -67,12 +70,12 @@ public class AgendaDao extends Dao {
 				return vo;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    logger.error("Erro ao consultar codigos de agendas no banco de dados", e);
 		}
 		return null;
 	}
 	
-	public AgendaVo findByCodigoStr(String codigo) {
+	public AgendaVo findByCodigo(String codigo) {
 		try {
 			Integer cod = Integer.parseInt(codigo);
 			return findByCodigo(cod);
@@ -90,8 +93,9 @@ public class AgendaDao extends Dao {
 			ps.setInt(3, Integer.parseInt(agendaVo.getRowid()));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            logger.error("Erro ao atualizar agenda ID: {}", agendaVo.getRowid(), e);
+            throw new TechnicalException("Erro ao atualizar agenda no banco de dados", e);
+        }
 	}
 
 	public void deleteAgenda(Integer id) {
@@ -101,8 +105,9 @@ public class AgendaDao extends Dao {
 			ps.setInt(1, id);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            logger.error("Erro ao excluir agenda ID: {}", id, e);
+            throw new TechnicalException("Erro ao excluir agenda no banco de dados", e);
+        }
 	}
 
 	public List<AgendaVo> listarParaRelatorio() {
@@ -119,8 +124,8 @@ public class AgendaDao extends Dao {
 				vo.setPeriodo(rs.getString("periodo"));
 				agendas.add(vo);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
+		    logger.error("Erro ao listar relatorios no banco de dados", e);
 		}
 		return agendas;
 	}
@@ -145,7 +150,7 @@ public class AgendaDao extends Dao {
 				return agendas;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    logger.error("Erro ao consultar agendas pelo nome no banco de dados", e);
 		}
 		return Collections.emptyList();
 	}
@@ -170,12 +175,12 @@ public class AgendaDao extends Dao {
 				return agendas;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    logger.error("Erro ao consultar agendas pelo periodo no banco de dados", e);
 		}
 		return Collections.emptyList();
 	}
 	
-	public boolean hasCompromissos(Integer idAgenda) {
+	public boolean existsCompromissosByAgenda(Integer idAgenda) {
 	    StringBuilder query = new StringBuilder("SELECT COUNT(1) total FROM compromisso WHERE cd_agenda = ?");
 	    
 	    try (Connection con = getConexao();
@@ -189,8 +194,8 @@ public class AgendaDao extends Dao {
 	            }
 	        }
 	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		    logger.error("Erro ao consultar agendas com compromissos existentes no banco de dados", e);
+		}
 	    
 	    return false;
 	}

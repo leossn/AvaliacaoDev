@@ -7,11 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import br.com.soc.sistema.exception.TechnicalException;
 import br.com.soc.sistema.vo.FuncionarioVo;
 
 public class FuncionarioDao extends Dao {
-	
+    private static final Logger logger = LogManager.getLogger(FuncionarioDao.class);	
 	public void insertFuncionario(FuncionarioVo funcionarioVo){
 		StringBuilder query = new StringBuilder("INSERT INTO funcionario (nm_funcionario) values (?)");
 		try(
@@ -21,9 +23,10 @@ public class FuncionarioDao extends Dao {
 			int i=1;
 			ps.setString(i++, funcionarioVo.getNome());
 			ps.executeUpdate();
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}
+		 } catch (SQLException e) {
+	            logger.error("Erro ao inserir funcionário no banco de dados", e);
+	            throw new TechnicalException("Erro ao salvar funcionário", e);
+	        }
 	}
 	
 	public List<FuncionarioVo> findAllFuncionarios(){
@@ -43,8 +46,8 @@ public class FuncionarioDao extends Dao {
 				funcionarios.add(vo);
 			}
 			return funcionarios;
-		}catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
+		    logger.error("Erro ao consultar funcionarios no banco de dados", e);
 		}
 		
 		return Collections.emptyList();
@@ -73,9 +76,10 @@ public class FuncionarioDao extends Dao {
 				}
 				return funcionarios;
 			}
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}		
+		} catch (SQLException e) {
+		    logger.error("Erro ao consultar nome de funcionarios no banco de dados", e);
+		}
+			
 		return Collections.emptyList();
 	}
 	
@@ -99,8 +103,8 @@ public class FuncionarioDao extends Dao {
 				}
 				return vo;
 			}
-		}catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
+		    logger.error("Erro ao consultar códigos de funcionarios no banco de dados", e);
 		}		
 		return null;
 	}
@@ -123,12 +127,14 @@ public class FuncionarioDao extends Dao {
 	            
 	            con.commit(); 
 	        } catch (SQLException e) {
-	            con.rollback(); 
-	            e.printStackTrace();
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+                con.rollback(); 
+                logger.error("Erro na transação de exclusão do funcionário ID {}. Rollback executado.", id, e);
+                throw new TechnicalException("Falha na exclusão do funcionário e compromissos vinculados", e);
+            }
+        } catch (SQLException e) {
+            logger.error("Erro de conexão ao tentar excluir funcionário ID {}", id, e);
+            throw new TechnicalException("Erro de conexão no banco de dados", e);
+        }
 	}
 	
 	public void updateFuncionario(FuncionarioVo funcionarioVo){
@@ -142,11 +148,12 @@ public class FuncionarioDao extends Dao {
 	        ps.executeUpdate();
 	        
 	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+            logger.error("Erro ao atualizar funcionário ID: {}", funcionarioVo.getRowid(), e);
+            throw new TechnicalException("Erro ao atualizar funcionário", e);
+        }
 	}
 	
-	public boolean hasCompromissoByFuncionario(Integer idFuncionario) {
+	public boolean existsCompromissoByFuncionario(Integer idFuncionario) {
 	    StringBuilder query = new StringBuilder("SELECT COUNT(1) total FROM compromisso WHERE cd_funcionario = ?");
 	    try (Connection con = getConexao();
 	         PreparedStatement ps = con.prepareStatement(query.toString())) {
@@ -157,8 +164,8 @@ public class FuncionarioDao extends Dao {
 	            }
 	        }
 	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		    logger.error("Erro ao consultar compromissos existentes de funcionarios no banco de dados", e);
+		}		
 	    return false;
 	}
 }

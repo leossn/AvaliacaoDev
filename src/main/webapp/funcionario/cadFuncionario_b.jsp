@@ -82,7 +82,6 @@
 		</div>
 	</div>
 
-	<!-- Modal Integrado e Nativo -->
 	<s:if test="exibirModalCascata">
 		<div class="modal fade" id="modalCascata" tabindex="-1"
 			data-bs-backdrop="static" data-bs-keyboard="false">
@@ -103,7 +102,6 @@
 						<s:url action="todosFuncionarios" var="urlCancelar" />
 						<a href="${urlCancelar}" class="btn btn-secondary btn-sm">Cancelar</a>
 
-						<!-- Envio do ID correto usando o valor do Action -->
 						<s:url action="excluirFuncionarios" var="urlConfirmar">
 							<s:param name="funcionarioVo.rowid"
 								value="%{funcionarioVo.rowid}" />

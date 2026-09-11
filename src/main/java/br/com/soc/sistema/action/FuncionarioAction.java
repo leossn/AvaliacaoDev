@@ -11,7 +11,7 @@ import br.com.soc.sistema.infra.OpcoesComboBuscar;
 import br.com.soc.sistema.vo.FuncionarioVo;
 
 public class FuncionarioAction extends Action {
-	
+	private static final long serialVersionUID = 1L;
 	private List<FuncionarioVo> funcionarios = new ArrayList<>();
 	private FuncionarioBusiness business = new FuncionarioBusiness();
 	private FuncionarioFilter filtrar = new FuncionarioFilter();

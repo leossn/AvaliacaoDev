@@ -91,7 +91,7 @@ public class FuncionarioBusiness {
 	    try {
 	        Integer cod = Integer.parseInt(codigo);
 	        FuncionarioDao funcDao = new FuncionarioDao();
-	        return funcDao.hasCompromissoByFuncionario(cod);
+	        return funcDao.existsCompromissoByFuncionario(cod);
 	    } catch (Exception e) {
 	        return false;
 	    }

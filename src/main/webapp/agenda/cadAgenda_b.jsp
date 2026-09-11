@@ -52,7 +52,7 @@
 						<s:url action="novoAgendas" var="urlNovo" />
 						<a href="${urlNovo}" class="btn btn-primary"><s:text
 								name="agenda.botao.nova" /></a>
-						<s:url action="cadRelatorio_is" var="urlRelatorio" />
+						<s:url action="prepararRelatorioCompromissos" var="urlRelatorio" />
 						<a href="${urlRelatorio}" class="btn btn-outline-secondary">Relatório</a>
 					</div>
 				</div>

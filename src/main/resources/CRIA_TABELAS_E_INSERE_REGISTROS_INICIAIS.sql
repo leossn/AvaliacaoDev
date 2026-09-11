@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS compromisso (
     rowid INT AUTO_INCREMENT PRIMARY KEY,
     cd_funcionario INT NOT NULL,
     cd_agenda INT NOT NULL,
-    dt_compromisso VARCHAR(10) NOT NULL,
+    dt_compromisso DATE NOT NULL,
     hr_compromisso VARCHAR(5) NOT NULL,
     FOREIGN KEY (cd_funcionario) REFERENCES funcionario(rowid),
     FOREIGN KEY (cd_agenda) REFERENCES agenda(rowid)

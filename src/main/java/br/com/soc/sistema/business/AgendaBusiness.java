@@ -59,7 +59,7 @@ public class AgendaBusiness {
 	        Integer cod = Integer.parseInt(codigo);
 	        
 	        AgendaDao agendaDao = new AgendaDao();
-	        boolean possuiCompromissos = agendaDao.hasCompromissos(cod);
+	        boolean possuiCompromissos = agendaDao.existsCompromissosByAgenda(cod);
 	        
 	        if (possuiCompromissos) {
 	            throw new BusinessException("Não é possível excluir esta agenda pois existem compromissos vinculados a ela.");
